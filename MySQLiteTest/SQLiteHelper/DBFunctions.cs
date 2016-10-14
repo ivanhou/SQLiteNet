@@ -11,7 +11,8 @@ namespace SQLiteHelper
     {
        private static string sql = "CREATE TABLE IF NOT EXISTS [O2Value] ([Id] INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,"
                     + "[Channel1] INTEGER  NOT NULL, [Channel2] INTEGER  NOT NULL,"
-                    + "[Channel3] INTEGER  NOT NULL,[Channel4] INTEGER  NOT NULL,[Channel5] INTEGER  NOT NULL,[Time] DATA  NOT NULL)";
+                    + "[Channel3] INTEGER  NOT NULL,[Channel4] INTEGER  NOT NULL,[Channel5] INTEGER  NOT NULL,"
+                    +"[Time] DATA  NOT NULL, [Text] VARCHAR(40)  NULL)";
 
         public static string ConnectionStringSQLite
         {
@@ -81,7 +82,7 @@ namespace SQLiteHelper
             return id;
         }
 
-        public static void Insert(ref int id, int channel1, int channel2, int channel3, int channel4, int channel5)
+        public static void Insert(ref int id, int channel1, int channel2, int channel3, int channel4, int channel5,string text)
         {
             using (SQLiteConnection conn = new SQLiteConnection(ConnectionStringSQLite))//创建连接  
             {
@@ -91,7 +92,7 @@ namespace SQLiteHelper
                 {
                     SQLiteCommand cmd = new SQLiteCommand(conn);//实例化SQL命令
                     cmd.Transaction = tran;
-                    cmd.CommandText = "insert into O2Value values(@id, @Channel1, @Channel2, @Channel3, @Channel4, @Channel5, @Time)";//设置带参SQL语句  
+                    cmd.CommandText = "insert into O2Value values(@id, @Channel1, @Channel2, @Channel3, @Channel4, @Channel5, @Time, @Text)";//设置带参SQL语句  
 
                     cmd.Parameters.AddRange(new[] {//添加参数  
                            new SQLiteParameter("@id", id + 1),  
@@ -100,7 +101,8 @@ namespace SQLiteHelper
                            new SQLiteParameter("@Channel3", channel3),  
                            new SQLiteParameter("@Channel4", channel4),  
                            new SQLiteParameter("@Channel5", channel5),  
-                           new SQLiteParameter("@Time", DateTime.Now)   
+                           new SQLiteParameter("@Time", DateTime.Now),  
+                           new SQLiteParameter("@Text", text)   
                        });
 
                     cmd.ExecuteNonQuery();//执行查询  

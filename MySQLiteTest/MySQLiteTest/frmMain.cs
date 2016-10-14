@@ -94,7 +94,7 @@ namespace MySQLiteTest
                 
                 using (SQLiteTransaction tran = conn.BeginTransaction())//实例化一个事务  
                 {
-                    for (int i = 1; i < 100000; i++)
+                    for (int i = 1; i < 10; i++)
                     {
                         SQLiteCommand cmd = new SQLiteCommand(conn);//实例化SQL命令
                         cmd.Transaction = tran;
@@ -133,6 +133,7 @@ namespace MySQLiteTest
             System.Random channel4 = new System.Random(150);
             System.Random channel5 = new System.Random(160);
 
+            string msg = "中文测试";
 
             using (SQLiteConnection conn = new SQLiteConnection(this.dbPath))//创建连接  
             {
@@ -144,7 +145,7 @@ namespace MySQLiteTest
                     {
                         SQLiteCommand cmd = new SQLiteCommand(conn);//实例化SQL命令
                         cmd.Transaction = tran;
-                        cmd.CommandText = "insert into O2Value values(@id, @Channel1, @Channel2, @Channel3, @Channel4, @Channel5, @Time)";//设置带参SQL语句  
+                        cmd.CommandText = "insert into O2Value values(@id, @Channel1, @Channel2, @Channel3, @Channel4, @Channel5, @Time, @Text)";//设置带参SQL语句  
 
                         cmd.Parameters.AddRange(new[] {//添加参数  
                            new SQLiteParameter("@id", this._id1 + i),  
@@ -153,7 +154,8 @@ namespace MySQLiteTest
                            new SQLiteParameter("@Channel3", channel3.Next(100,200)),  
                            new SQLiteParameter("@Channel4", channel4.Next(100,200)),  
                            new SQLiteParameter("@Channel5", channel5.Next(100,200)),  
-                           new SQLiteParameter("@Time", DateTime.Now)   
+                           new SQLiteParameter("@Time", DateTime.Now),  
+                           new SQLiteParameter("@Text", msg) 
                        });
                         cmd.ExecuteNonQuery();//执行查询  
                     }
@@ -179,7 +181,13 @@ namespace MySQLiteTest
             System.Random channel4 = new System.Random(150);
             System.Random channel5 = new System.Random(160);
 
-            SQLiteHelper.DBFunctions.Insert(ref this._id2, channel1.Next(100, 300), channel2.Next(100, 300), channel3.Next(100, 300), channel4.Next(100, 300), channel5.Next(100, 300));
+            string msg = "测试中文";
+
+            string ikoktest = "测试";
+            byte[] utf8bytes = System.Text.Encoding.Default.GetBytes(ikoktest);
+            ikoktest = System.Text.Encoding.UTF8.GetString(utf8bytes);  
+
+            SQLiteHelper.DBFunctions.Insert(ref this._id2, channel1.Next(100, 300), channel2.Next(100, 300), channel3.Next(100, 300), channel4.Next(100, 300), channel5.Next(100, 300), ikoktest);
         }
 
         private void button2_Click(object sender, EventArgs e)
